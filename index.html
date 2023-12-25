@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .navbar {
+      background-color: #333;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #fff;
+      position: relative;
+    }
+
+    #search-icon {
+      cursor: pointer;
+    }
+
+    #search-container {
+      visibility: hidden;
+      opacity: 0;
+      height: 0;
+      overflow: hidden;
+      transition: visibility 0s, opacity 0.3s, height 0.3s;
+      position: absolute;
+      top: 50%; /* Center vertically */
+      left: 50%; /* Center horizontally */
+      transform: translate(-50%, -50%); /* Center precisely */
+      background-color: #333;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+
+    #search-input {
+      padding: 8px;
+      font-size: 14px;
+      width: 200px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      outline: none;
+    }
+
+    #search-suggestions {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      max-height: 200px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      border-top: none;
+      border-radius: 0 0 5px 5px;
+      background-color: #fff;
+      display: none;
+    }
+
+    .suggestion {
+      padding: 8px;
+      cursor: pointer;
+    }
+
+    .suggestion:hover {
+      background-color: #f2f2f2;
+    }
+
+    #close-button {
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<div class="navbar">
+  <div id="search-icon" onclick="toggleSearch()">
+    🔍 <!-- You can replace this with your preferred search icon -->
+  </div>
+  <div id="search-container">
+    <input type="text" id="search-input" placeholder="Type to search">
+    <div id="search-suggestions"></div>
+    <span id="close-button" onclick="closeSearch()">X</span>
+  </div>
+</div>
+
+<script>
+  const searchContainer = document.getElementById('search-container');
+  const searchInput = document.getElementById('search-input');
+  const searchSuggestions = document.getElementById('search-suggestions');
+
+  // Sample search queries
+  const suggestions = ['JavaScript', 'HTML', 'CSS', 'Web Development', 'Programming'];
+
+  // Function to toggle search bar visibility
+  function toggleSearch() {
+    searchContainer.style.visibility = 'visible';
+    searchContainer.style.opacity = '1';
+    searchContainer.style.height = 'auto';
+    searchInput.focus();
+  }
+
+  // Event listener for input changes
+  searchInput.addEventListener('input', function () {
+    const query = this.value.trim().toLowerCase();
+    showSuggestions(filterSuggestions(query));
+  });
+
+  // Event listener for suggestion clicks
+  searchSuggestions.addEventListener('click', function (event) {
+    if (event.target.classList.contains('suggestion')) {
+      searchInput.value = event.target.innerText;
+      hideSuggestions();
+    }
+  });
+
+  // Function to filter suggestions based on the input query
+  function filterSuggestions(query) {
+    return suggestions.filter(suggestion => suggestion.toLowerCase().includes(query));
+  }
+
+  // Function to display suggestions
+  function showSuggestions(filteredSuggestions) {
+    if (filteredSuggestions.length > 0) {
+      searchSuggestions.innerHTML = '';
+      filteredSuggestions.forEach(suggestion => {
+        const suggestionElement = document.createElement('div');
+        suggestionElement.classList.add('suggestion');
+        suggestionElement.innerText = suggestion;
+        searchSuggestions.appendChild(suggestionElement);
+      });
+      searchSuggestions.style.display = 'block';
+    } else {
+      hideSuggestions();
+    }
+  }
+
+  // Function to hide suggestions
+  function hideSuggestions() {
+    searchSuggestions.style.display = 'none';
+  }
+
+  // Function to close the search bar
+  function closeSearch() {
+    searchContainer.style.visibility = 'hidden';
+    searchContainer.style.opacity = '0';
+    searchContainer.style.height = '0';
+    searchInput.value = '';
+    hideSuggestions();
+  }
+</script>
+
+</body>
+</html>
